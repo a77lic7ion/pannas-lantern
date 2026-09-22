@@ -1,13 +1,9 @@
 // Vercel serverless entry: /api/llm/chat and /api/llm/models
-// Reuses the same proxy cores as the LAN Express server, so behaviour is
-// identical on both deployments. See server/_core/llmProxy.ts.
+// SELF-CONTAINED by design: Vercel's builder cannot reliably bundle imports
+// from outside the api/ directory, so this file inlines the provider
+// allowlist and Gemini translation. Same logic as
+// server/_core/llmProxyCore.ts — keep the two in sync when editing.
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import {
-  resolveProvider,
-  providerLabel,
-  toGeminiChat,
-  normalizeGeminiResponse,
-} from "../server/_core/llmProxyCore";
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   // CORS not needed (same-origin), but harmless and future-proof.
@@ -79,6 +75,112 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 function badRequest(res: VercelResponse, message: string) {
   res.status(400).json({ error: message });
 }
+
+type Upstream = {
+  base: string;
+  chatPath: string;
+  modelsPath: string;
+  auth: (apiKey: string) => Record<string, string>;
+  gemini?: boolean;
+};
+
+const UPSTREAMS: Record<string, Upstream> = {
+  mistral: {
+    base: "https://api.mistral.ai/v1",
+    chatPath: "/chat/completions",
+    modelsPath: "/models",
+    auth: (key) => ({ authorization: `Bearer ${key}` }),
+  },
+  openrouter: {
+    base: "https://openrouter.ai/api/v1",
+    chatPath: "/chat/completions",
+    modelsPath: "/models",
+    auth: (key) => ({ authorization: `Bearer ${key}` }),
+  },
+  openai: {
+    base: "https://api.openai.com/v1",
+    chatPath: "/chat/completions",
+    modelsPath: "/models",
+    auth: (key) => ({ authorization: `Bearer ${key}` }),
+  },
+  gemini: {
+    base: "https://generativelanguage.googleapis.com/v1beta",
+    chatPath: "", // unused — translated per-model below
+    modelsPath: "/models",
+    auth: () => ({}), // key goes in the x-goog-api-key header for Gemini
+    gemini: true,
+  },
+};
+
+function resolveProvider(provider: string): Upstream | null {
+  const key = provider.trim().toLowerCase();
+  if (key === "mistral") return UPSTREAMS.mistral;
+  if (key === "openrouter") return UPSTREAMS.openrouter;
+  if (key === "openai") return UPSTREAMS.openai;
+  if (key === "gemini" || key === "google gemini") return UPSTREAMS.gemini;
+  return null;
+}
+
+function providerLabel(provider: string) {
+  const key = provider.trim().toLowerCase();
+  if (key === "gemini" || key === "google gemini") return "Gemini";
+  return key.charAt(0).toUpperCase() + key.slice(1);
+}
+
+// Translate an OpenAI chat/completions body to Gemini generateContent.
+function toGeminiChat(body: Record<string, unknown>, _model: string) {
+  const messages = Array.isArray(body.messages) ? body.messages : [];
+  const systemText = messages
+    .filter((m) => (m as { role?: string }).role === "system")
+    .map((m) => String((m as { content?: string }).content ?? ""))
+    .join("\n\n");
+  const contents = messages
+    .filter((m) => {
+      const role = (m as { role?: string }).role;
+      return role === "user" || role === "assistant";
+    })
+    .map((m) => {
+      const role = (m as { role?: string }).role === "assistant" ? "model" : "user";
+      return { role, parts: [{ text: String((m as { content?: string }).content ?? "") }] };
+    });
+
+  const out: Record<string, unknown> = { contents };
+  if (systemText) out.systemInstruction = { parts: [{ text: systemText }] };
+
+  const responseFormat = body.response_format as
+    | { type?: string; json_schema?: { schema?: Record<string, unknown> } }
+    | undefined;
+  if (responseFormat?.type === "json_schema" && responseFormat.json_schema?.schema) {
+    out.generationConfig = {
+      responseMimeType: "application/json",
+      responseSchema: responseFormat.json_schema.schema,
+      ...(typeof body.max_tokens === "number" ? { maxOutputTokens: body.max_tokens } : {}),
+    };
+  } else if (responseFormat?.type === "json_object") {
+    out.generationConfig = {
+      responseMimeType: "application/json",
+      ...(typeof body.max_tokens === "number" ? { maxOutputTokens: body.max_tokens } : {}),
+    };
+  } else if (typeof body.max_tokens === "number") {
+    out.generationConfig = { maxOutputTokens: body.max_tokens };
+  }
+  return out;
+}
+
+// Normalize a Gemini generateContent response back to OpenAI shape.
+function normalizeGeminiResponse(raw: unknown): {
+  choices: Array<{ message: { content: string } }>;
+} {
+  const data = raw as {
+    candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
+  };
+  const text = (data?.candidates?.[0]?.content?.parts ?? [])
+    .map((part) => part.text ?? "")
+    .join("")
+    .trim();
+  return { choices: [{ message: { content: text } }] };
+}
+
 
 async function forwardJson(
   res: VercelResponse,
