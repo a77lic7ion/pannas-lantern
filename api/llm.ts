@@ -203,13 +203,16 @@ async function forwardJson(
     if (normalize) {
       try {
         const normalized = normalize(JSON.parse(text));
-        res.status(200).type("application/json").send(JSON.stringify(normalized));
+        // Vercel's VercelResponse doesn't chain .type() like Express — use setHeader.
+        res.status(200).setHeader("Content-Type", "application/json");
+        res.send(JSON.stringify(normalized));
         return;
       } catch {
-        // fall through to raw passthrough
+        // fall through: send raw text if normalization fails
       }
     }
-    res.status(200).type("application/json").send(text);
+    res.status(200).setHeader("Content-Type", "application/json");
+    res.send(text);
   } catch (error) {
     const message = error instanceof Error ? error.message : "unknown error";
     res.status(502).json({ error: `${providerLabel2} request failed: ${message}` });
