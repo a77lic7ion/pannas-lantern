@@ -78,7 +78,7 @@ async function researchWeb(query: string): Promise<{ sources: ResearchSource[]; 
   if (!cleanQuery) return { sources: [], note: "No research question was supplied." };
   const searchUrl = `https://html.duckduckgo.com/html/?q=${encodeURIComponent(cleanQuery)}`;
   const response = await fetch(searchUrl, {
-    headers: { "user-agent": "PanasLanternResearch/1.0" },
+    headers: { "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36" },
     signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
   });
   if (!response.ok) throw new Error(`Search returned ${response.status}.`);
