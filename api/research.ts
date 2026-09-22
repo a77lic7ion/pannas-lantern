@@ -121,10 +121,41 @@ async function researchWeb(query: string): Promise<{ sources: ResearchSource[]; 
   };
 }
 
+// Fallback used when DuckDuckGo blocks the request (Vercel datacenter IPs
+// get 403). Wikipedia's API is datacenter-friendly and needs no key.
+async function wikipediaSearch(query: string): Promise<ResearchSource[]> {
+  const url = `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(query)}&format=json&srlimit=3`;
+  const response = await fetch(url, {
+    headers: { "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36" },
+    signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+  });
+  if (!response.ok) return [];
+  const data = (await response.json()) as {
+    query?: { search?: Array<{ title: string; snippet: string }> };
+  };
+  return (data.query?.search ?? []).map((item) => ({
+    title: item.title,
+    url: `https://en.wikipedia.org/wiki/${encodeURIComponent(item.title.replace(/ /g, "_"))}`,
+    excerpt: decodeHtml(item.snippet.replace(/<[^>]+>/g, "")).trim(),
+  }));
+}
+
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   const q = typeof req.query.q === "string" ? req.query.q : "";
   try {
-    const result = await researchWeb(q);
+    let result;
+    try {
+      result = await researchWeb(q);
+    } catch {
+      // DuckDuckGo blocked (common from datacenter IPs) — fall back to Wikipedia.
+      const sources = await wikipediaSearch(q);
+      result = {
+        sources,
+        note: sources.length
+          ? "DuckDuckGo was unavailable, so encyclopedia sources were retrieved instead."
+          : "No readable public sources were found.",
+      };
+    }
     res.status(200).json(result);
   } catch (error) {
     res.status(502).json({
