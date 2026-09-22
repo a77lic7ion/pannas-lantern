@@ -109,7 +109,7 @@ import {
   type WellbeingAppointmentNote
 } from "@/lib/lantern-data";
 
-const LANTERN_EMBLEM = "/lantern/emblems/lantern-emblem.jpg";
+const LANTERN_EMBLEM = `${import.meta.env.BASE_URL}emblems/lantern-emblem.jpg`;
 
 type LanternActionProposal = {
   type: string;

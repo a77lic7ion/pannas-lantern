@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "buildCommand": "npm run build:client",
+  "outputDirectory": "dist/public",
+  "framework": null,
+  "rewrites": [
+    { "source": "/api/research", "destination": "/api/research" },
+    { "source": "/api/llm/chat", "destination": "/api/llm" },
+    { "source": "/api/llm/models", "destination": "/api/llm" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ],
+  "functions": {
+    "api/llm.ts": { "maxDuration": 120 },
+    "api/research.ts": { "maxDuration": 60 }
+  }
+}

@@ -6,8 +6,12 @@ import { defineConfig } from "vite";
 
 const PROJECT_ROOT = import.meta.dirname;
 
+// Build-time base path. LAN deployment serves the app under nginx at
+// /lantern/ (VITE_BASE=/lantern/); Vercel serves at the domain root, so the
+// base must be "/". Defaults to "/" so a bare `vite build` (Vercel) works.
+const BASE_PATH = process.env.VITE_BASE ?? "/";
 export default defineConfig({
-  base: "/lantern/",
+  base: BASE_PATH,
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
