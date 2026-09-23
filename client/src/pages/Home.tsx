@@ -1,7 +1,6 @@
 import { AIChatBox, type Message } from "@/components/AIChatBox";
 import {
   Archive,
-  ArrowUpRight,
   BookOpen,
   BookOpenCheck,
   CalendarCheck,
@@ -34,7 +33,6 @@ import {
   StickyNote,
   Trash2,
   Upload,
-  UsersRound,
   X,
 } from "lucide-react";
 import { type CSSProperties, type ReactNode, useEffect, useMemo, useState } from "react";
@@ -77,7 +75,6 @@ import {
   removeWellbeingCheckin,
   removeWellbeingMedication,
   affirmationForDate,
-  nextSplashAffirmation,
   wellbeingDateLabel,
   wellbeingReportItems,
   WELLBEING_MOODS,
@@ -803,27 +800,11 @@ function LanternPanel({ tab, reply, onSuggestion, onExpand, onCollapse }: { tab:
   return <aside className="card lantern-panel" id="lantern-panel"><div className="lantern-head"><h2 className="lantern-title">The Lantern</h2><IconButton label="Collapse Lantern panel" onClick={onCollapse}><PanelRightClose size={18} /></IconButton></div><img className="lantern-art" src={LANTERN_EMBLEM} alt="Pana’s Lantern emblem" /><div className="lantern-context"><span>You are in:</span><strong>{tab.label}</strong></div><p className="lantern-copy">{tabAssistantCopy[tab.id]}</p><div className="suggestions">{tab.suggestions.map(suggestion => <button className="suggestion" key={suggestion} onClick={() => onSuggestion(suggestion)}><Sparkles size={17} color="var(--accent)" />{suggestion}<ChevronRight size={16} /></button>)}</div>{reply && <div className="lantern-reply">{reply}</div>}<button className="button small" style={{ marginTop: 15, width: "100%", justifyContent: "center" }} onClick={onExpand}><MessageSquareText size={16} />Chat with The Lantern</button></aside>;
 }
 
-function LanternSplash({ onEnter }: { onEnter: () => void }) {
-  const [affirmation] = useState(() => nextSplashAffirmation());
-  return <main className="lantern-splash" aria-labelledby="splash-title">
-    <div className="splash-stars" aria-hidden="true"><i /><i /><i /><i /><i /></div>
-    <div className="splash-vine splash-vine-left" aria-hidden="true"><Flower2 /><Feather /><Flower2 /></div>
-    <div className="splash-vine splash-vine-right" aria-hidden="true"><Flower2 /><Feather /><Flower2 /></div>
-    <div className="splash-content">
-      <p className="splash-kicker">A quiet place for ideas</p>
-      <h1 id="splash-title">Pana’s Lantern</h1>
-      <p className="splash-subtitle">A light for research, writing, and remembering.</p>
-      <button className="splash-enter" type="button" onClick={onEnter}><span>Enter Pana’s Lantern</span><ArrowUpRight size={18} aria-hidden="true" /></button>
-      <p className="splash-hint">Take your time. Everything begins where you are.</p><p className="splash-affirmation" aria-label="Daily affirmation">“{affirmation}”</p>
-    </div>
-  </main>;
-}
 
 export default function Home() {
   const reviewParam = typeof window === "undefined" ? null : new URLSearchParams(window.location.search).get("reviewTab");
   const reviewTab = tabs.some(item => item.id === reviewParam) ? reviewParam as LanternTab : null;
   const [activeTab, setActiveTab] = useState<LanternTab>(() => reviewTab ?? "today");
-  const [showSplash, setShowSplash] = useState(() => !reviewTab);
 
   const [modal, setModal] = useState(false);
   const [lanternReply, setLanternReply] = useState<string | null>(null);
@@ -996,8 +977,6 @@ export default function Home() {
       setLanternBusy(false);
     }
   };
-
-  if (showSplash) return <LanternSplash onEnter={() => setShowSplash(false)} />;
 
   return <div className="lantern-app" style={style}>
     <div className={`app-shell ${sidebarCollapsed ? "sidebar-is-collapsed" : ""}`}><aside className={`sidebar ${sidebarCollapsed ? "sidebar-collapsed" : ""}`}><div className="brand"><img className="brand-mark" src={LANTERN_EMBLEM} alt="" /><div className="sidebar-brand-copy"><div className="brand-name">Pana’s<br />Lantern</div><div className="brand-subtitle">Research · writing · remembering</div></div></div><button className="sidebar-toggle" type="button" aria-label={sidebarCollapsed ? "Expand navigation sidebar" : "Collapse navigation sidebar"} aria-expanded={!sidebarCollapsed} onClick={() => setSidebarPanelCollapsed(!sidebarCollapsed)}>{sidebarCollapsed ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}<span>{sidebarCollapsed ? "Expand navigation" : "Collapse navigation"}</span></button><nav className="main-nav" aria-label="Pana’s Lantern sections">{tabs.map(item => { const Icon = item.icon; return <button key={item.id} className={`nav-button ${item.id === activeTab ? "active" : ""} ${item.id === "settings" ? "settings" : ""}`} aria-label={item.label} title={sidebarCollapsed ? item.label : undefined} onClick={() => { setActiveTab(item.id); setLanternReply(null); }}><Icon size={20} /><span>{item.label}</span></button>; })}</nav><div className="sidebar-garden"><Flower2 size={23} /><Feather size={19} /><Flower2 size={16} /></div></aside>
