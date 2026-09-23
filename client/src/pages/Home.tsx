@@ -802,17 +802,20 @@ function LanternPanel({ tab, reply, onSuggestion, onExpand, onCollapse }: { tab:
   return <aside className="card lantern-panel" id="lantern-panel"><div className="lantern-head"><h2 className="lantern-title">The Lantern</h2><IconButton label="Collapse Lantern panel" onClick={onCollapse}><PanelRightClose size={18} /></IconButton></div><img className="lantern-art" src={LANTERN_EMBLEM} alt="Pana’s Lantern emblem" /><div className="lantern-context"><span>You are in:</span><strong>{tab.label}</strong></div><p className="lantern-copy">{tabAssistantCopy[tab.id]}</p><div className="suggestions">{tab.suggestions.map(suggestion => <button className="suggestion" key={suggestion} onClick={() => onSuggestion(suggestion)}><Sparkles size={17} color="var(--accent)" />{suggestion}<ChevronRight size={16} /></button>)}</div>{reply && <div className="lantern-reply">{reply}</div>}<button className="button small" style={{ marginTop: 15, width: "100%", justifyContent: "center" }} onClick={onExpand}><MessageSquareText size={16} />Chat with The Lantern</button></aside>;
 }
 
-const emphasisWords = /(\b(?:built|outworked|carried|deserve|earned|fighting|survived|hustle|devotion|willpower|refuses?|everything|nothing|no one|yourself|strength|power|enough|always|never|still|today)\b)/gi;
+const emphasisPattern = /(\b(?:built|outworked|carried|deserve|earned|fighting|survived|hustle|devotion|willpower|refuses?|everything|nothing|no one|yourself|strength|power|enough|always|never|still|today)\b)/gi;
+const emphasisSimple = /^(?:built|outworked|carried|deserve|earned|fighting|survived|hustle|devotion|willpower|refuses?|everything|nothing|no one|yourself|strength|power|enough|always|never|still|today)$/i;
 
 function formatAffirmation(raw: string) {
-  const parts = raw.replace(emphasisWords, '⟪EM⟫$1⟫/EM⟫').split('⟪EM⟫');
-  return parts.map((part, i) => {
-    if (part.startsWith('⟫/EM⟫')) return null;
-    const inner = part.replace('⟫/EM⟫', '');
-    const words = inner.split(' ');
-    const last = words.pop();
-    return <span key={i}>{words.join(' ')}{words.length > 0 ? ' ' : ''}<strong><em>{last}</em></strong>{part.endsWith('⟫/EM⟫') ? '' : ' '}</span>;
-  });
+  const parts = raw.split(emphasisPattern);
+  return <>
+    {parts.map((part, i) => {
+      if (part === '') return null;
+      if (emphasisSimple.test(part)) {
+        return <strong key={i}><em>{part}</em></strong>;
+      }
+      return <span key={i}>{part}</span>;
+    })}
+  </>;
 }
 
 function LanternSplash({ onEnter }: { onEnter: () => void }) {
