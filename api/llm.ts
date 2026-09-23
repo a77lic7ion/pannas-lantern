@@ -114,9 +114,17 @@ const UPSTREAMS: Record<string, Upstream> = {
   },
 };
 
-function filterOpenRouterFreeModels(raw: unknown): unknown | null {
-  if (!Array.isArray(raw) || !raw.length) return raw;
-  const free = raw.filter((m) => {
+/**
+ * For OpenRouter, only return free models (model id ends with `:free` or `-free`).
+ * Accepts either a raw array of models OR the OpenRouter {data: [...]} envelope.
+ */
+function filterOpenRouterFreeModels(raw: unknown): unknown {
+  if (!raw || typeof raw !== "object") return raw;
+  const isArray = Array.isArray(raw);
+  const dataArr = isArray ? raw : (raw as { data?: unknown[] }).data;
+  if (!Array.isArray(dataArr) || !dataArr.length) return raw;
+
+  const free = dataArr.filter((m) => {
     if (typeof m === "string") return m.endsWith(":free") || m.endsWith("-free");
     if (m && typeof m === "object") {
       const rec = m as Record<string, unknown>;
@@ -125,7 +133,9 @@ function filterOpenRouterFreeModels(raw: unknown): unknown | null {
     }
     return false;
   });
-  return free.length ? free : raw;
+
+  if (!free.length) return raw;
+  return isArray ? free : { ...(raw as Record<string, unknown>), data: free };
 }
 
 function resolveProvider(provider: string): Upstream | null {
