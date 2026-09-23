@@ -3,7 +3,7 @@
 // providers. The key is never stored server-side — it passes through this
 // request only. Shared logic lives in llmProxyCore.ts (also used by Vercel).
 import type { Request, Response } from "express";
-import { resolveProvider, providerLabel, toGeminiChat, normalizeGeminiResponse } from "./llmProxyCore";
+import { resolveProvider, providerLabel, toGeminiChat, normalizeGeminiResponse, filterOpenRouterFreeModels } from "./llmProxyCore";
 
 function badRequest(res: Response, message: string) {
   res.status(400).json({ error: message });
@@ -83,9 +83,12 @@ export async function handleLlmModels(req: Request, res: Response) {
   if (!upstream) return badRequest(res, "Unknown provider. Use mistral, openrouter, openai or gemini.");
   if (!apiKey) return badRequest(res, "Missing API key.");
 
+  const isOpenRouter = provider.trim().toLowerCase() === "openrouter";
+  const normalize = isOpenRouter ? filterOpenRouterFreeModels : undefined;
+
   const url = `${upstream.base}${upstream.modelsPath}`;
   return forwardJson(res, url, {
     method: "GET",
     headers: { ...upstream.auth(apiKey) },
-  }, providerLabel(provider));
+  }, providerLabel(provider), normalize);
 }

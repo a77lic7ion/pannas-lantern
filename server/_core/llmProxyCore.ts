@@ -36,12 +36,30 @@ export const UPSTREAMS: Record<string, Upstream> = {
   },
   gemini: {
     base: "https://generativelanguage.googleapis.com/v1beta",
-    chatPath: "", // unused — translated per-model below
+    chatPath: "",
     modelsPath: "/models",
-    auth: () => ({}), // key goes in the URL for Gemini
+    auth: () => ({}),
     gemini: true,
   },
 };
+
+/**
+ * For OpenRouter, only return free models (pricing.prompt == 0 && pricing.completion == 0).
+ * Returns null if not OpenRouter or if upstream doesn't provide pricing info.
+ */
+export function filterOpenRouterFreeModels(raw: unknown): unknown | null {
+  if (!Array.isArray(raw) || !raw.length) return raw;
+  const free = raw.filter((m) => {
+    if (!m || typeof m !== "object") return false;
+    const rec = m as Record<string, unknown>;
+    const pricing = rec.pricing as Record<string, unknown> | undefined;
+    if (!pricing || typeof pricing !== "object") return false;
+    const prompt = Number(pricing.prompt ?? pricing.prompt_tokens ?? 0);
+    const completion = Number(pricing.completion ?? pricing.completion_tokens ?? 0);
+    return prompt === 0 && completion === 0;
+  });
+  return free.length ? free : raw; // fall back to all if no free models found
+}
 
 export function resolveProvider(provider: string): Upstream | null {
   const key = provider.trim().toLowerCase();

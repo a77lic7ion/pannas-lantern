@@ -65,11 +65,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const upstream = resolveProvider(provider);
   if (!upstream) return badRequest(res, "Unknown provider. Use mistral, openrouter, openai or gemini.");
   if (!apiKey) return badRequest(res, "Missing API key.");
+  const isOpenRouter = provider.trim().toLowerCase() === "openrouter";
+  const normalize = isOpenRouter ? filterOpenRouterFreeModels : undefined;
   const url = `${upstream.base}${upstream.modelsPath}`;
   return forwardJson(res, url, {
     method: "GET",
     headers: { ...upstream.auth(apiKey) },
-  }, providerLabel(provider));
+  }, providerLabel(provider), normalize);
 }
 
 function badRequest(res: VercelResponse, message: string) {
@@ -105,12 +107,26 @@ const UPSTREAMS: Record<string, Upstream> = {
   },
   gemini: {
     base: "https://generativelanguage.googleapis.com/v1beta",
-    chatPath: "", // unused — translated per-model below
+    chatPath: "",
     modelsPath: "/models",
-    auth: () => ({}), // key goes in the x-goog-api-key header for Gemini
+    auth: () => ({}),
     gemini: true,
   },
 };
+
+function filterOpenRouterFreeModels(raw: unknown): unknown | null {
+  if (!Array.isArray(raw) || !raw.length) return raw;
+  const free = raw.filter((m) => {
+    if (!m || typeof m !== "object") return false;
+    const rec = m as Record<string, unknown>;
+    const pricing = rec.pricing as Record<string, unknown> | undefined;
+    if (!pricing || typeof pricing !== "object") return false;
+    const prompt = Number(pricing.prompt ?? pricing.prompt_tokens ?? 0);
+    const completion = Number(pricing.completion ?? pricing.completion_tokens ?? 0);
+    return prompt === 0 && completion === 0;
+  });
+  return free.length ? free : raw;
+}
 
 function resolveProvider(provider: string): Upstream | null {
   const key = provider.trim().toLowerCase();
