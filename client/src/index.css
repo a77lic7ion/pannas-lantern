@@ -438,43 +438,61 @@ body, .lantern-app { background: #faf7f0; }
 .today-wellbeing-log small { color: #718176; font-size: .74rem; }
 @media (max-width: 860px) { .wellbeing-grid, .wellbeing-report-grid, .wellbeing-routine-grid { grid-template-columns: 1fr; } }
 
-.splash-quote-top {
-  position: relative;
-  margin: 0 0 36px 0;
-  padding: 24px 28px;
-  background: rgba(255, 200, 100, 0.06);
-  border: 1px solid rgba(255, 200, 100, 0.2);
-  border-left: 3px solid rgba(255, 200, 100, 0.6);
-  border-radius: 4px;
-  animation: splash-reveal 1s var(--ease-out, cubic-bezier(.23,1,.32,1)) both;
+.splash-sky {
+  position: absolute;
+  top: 8vh;
+  left: 0;
+  right: 0;
+  display: grid;
+  place-items: center;
+  padding: 0 40px;
+  z-index: 3;
+  animation: splash-reveal 1.2s var(--ease-out, cubic-bezier(.23,1,.32,1)) both;
 }
+
+.splash-quote-morning {
+  max-width: 720px;
+  text-align: center;
+  position: relative;
+  padding: 0 40px;
+}
+
 .splash-quote-mark {
   font-family: "Fraunces", serif;
-  font-size: 48px;
+  font-size: 64px;
   font-weight: 300;
-  color: rgba(255, 200, 100, 0.5);
+  color: rgba(255, 200, 100, 0.7);
   line-height: 1;
-  display: block;
-  margin: -12px 0 -8px 0;
+  position: absolute;
 }
+
+.splash-quote-mark-open {
+  top: -32px;
+  left: -16px;
+}
+
 .splash-quote-mark-close {
-  text-align: right;
-  margin: -8px 0 -12px 0;
+  bottom: -32px;
+  right: -16px;
 }
+
 .splash-quote-text {
   font-family: "Fraunces", serif;
-  font-size: clamp(16px, 1.8vw, 20px);
-  line-height: 1.5;
-  color: #f1dfba;
+  font-size: clamp(22px, 3.2vw, 36px);
+  line-height: 1.35;
+  color: #fff8e6;
   margin: 0;
-  font-weight: 400;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.4);
 }
+
 .splash-quote-text strong em {
   color: #ffd88a;
   font-weight: 700;
   font-style: italic;
   letter-spacing: 0.02em;
-  text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  text-shadow: 0 1px 6px rgba(0,0,0,0.5);
 }
 .splash-affirmation { display: none; }
 
@@ -566,7 +584,7 @@ body, .lantern-app { background: #faf7f0; }
 .assistant-action { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 8px; padding-top: 8px; border-top: 1px solid rgba(180, 145, 74, .22); }
 .assistant-action p { margin: 0; font-size: 13px; line-height: 1.4; }
 @media (max-width: 680px) { .assistant-mode-row, .assistant-action { grid-template-columns: 1fr; flex-direction: column; align-items: stretch; } }
-@media (max-width: 720px) { .lantern-splash::before { background: linear-gradient(90deg, rgba(9,37,34,.93), rgba(9,37,34,.67)); } .splash-content { justify-self: center; text-align: center; margin-left: 0; } .splash-kicker { margin-top: 60px; } .splash-subtitle { margin-left: auto; margin-right: auto; } .splash-enter { margin-left: 0; } .splash-hint { margin-left: 0; } }
+@media (max-width: 720px) { .lantern-splash::before { background: linear-gradient(90deg, rgba(9,37,34,.93), rgba(9,37,34,.67)); } .splash-content { justify-self: center; text-align: center; margin-left: 0; } .splash-kicker { margin-top: 60px; } .splash-subtitle { margin-left: auto; margin-right: auto; } .splash-enter { margin-left: 0; } .splash-hint { margin-left: 0; } .splash-sky { padding: 0 20px; top: 6vh; } .splash-quote-morning { padding: 0 24px; } .splash-quote-text { font-size: clamp(16px, 4vw, 22px); } .splash-quote-mark { font-size: 48px; } .splash-quote-mark-open { top: -24px; left: -8px; } .splash-quote-mark-close { bottom: -24px; right: -8px; } }
 @media (prefers-reduced-motion: reduce) { .splash-content, .splash-kicker, .lantern-splash h1, .splash-subtitle, .splash-enter, .splash-hint, .splash-emblem, .splash-glow, .splash-vine, .splash-stars i { animation: none !important; } .splash-enter { box-shadow: 0 0 0 6px rgba(226, 170, 66, .08), 0 0 28px rgba(238, 184, 75, .45), inset 0 1px rgba(255,255,255,.36); } }
 .assistant-action details { margin-top: 5px; color: #7a806e; font-size: 11px; }
 .assistant-action details summary { cursor: pointer; font-weight: 700; }

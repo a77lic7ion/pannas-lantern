@@ -824,12 +824,14 @@ function LanternSplash({ onEnter }: { onEnter: () => void }) {
     <div className="splash-stars" aria-hidden="true"><i /><i /><i /><i /><i /></div>
     <div className="splash-vine splash-vine-left" aria-hidden="true"><Flower2 /><Feather /><Flower2 /></div>
     <div className="splash-vine splash-vine-right" aria-hidden="true"><Flower2 /><Feather /><Flower2 /></div>
-    <div className="splash-content">
-      <div className="splash-quote-top">
-        <span className="splash-quote-mark">"</span>
+    <div className="splash-sky">
+      <div className="splash-quote-morning">
+        <span className="splash-quote-mark splash-quote-mark-open">"</span>
         <p className="splash-quote-text">{formatAffirmation(affirmation)}</p>
         <span className="splash-quote-mark splash-quote-mark-close">"</span>
       </div>
+    </div>
+    <div className="splash-content">
       <p className="splash-kicker">A quiet place for ideas</p>
       <h1 id="splash-title">Pana’s Lantern</h1>
       <p className="splash-subtitle">A light for research, writing, and remembering.</p>
