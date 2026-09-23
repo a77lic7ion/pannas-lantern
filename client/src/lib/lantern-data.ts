@@ -421,63 +421,235 @@ export const WELLBEING_COMFORTS = ["Sleep", "Appetite", "Tension", "Pain", "Othe
 export const WELLBEING_SAFETY_NOTE = "This is a private reflection tool, not medical advice or urgent support. For new, severe, or worrying symptoms, contact a qualified clinician or local urgent support.";
 
 const affirmationOpeners = [
-  "Today, your presence matters",
-  "You are allowed to move gently",
-  "Your story still has room",
-  "A quiet beginning is still a beginning",
-  "You deserve patience from yourself",
-  "Your care for others is meaningful",
-  "Rest is part of a life well lived",
-  "You can make room for one small hope",
-  "Your feelings may be heard without taking over",
-  "There is no age limit on new tenderness",
-  "You have made it through difficult days",
-  "Your wisdom does not need to shout",
-  "A softer pace can still carry you forward",
-  "You are more than the work waiting for you",
-  "Your kindness includes kindness toward yourself",
+  "You built yourself from nothing but willpower",
+  "Today, you are enough",
+  "You have outworked every obstacle in your path",
+  "Your hustle is not desperation; it is devotion",
+  "You are allowed to put yourself first",
+  "You have carried a family on your back",
+  "Your children are proof of what a single mother can do",
+  "There is no syllabus for what you have taught yourself",
+  "You deserve rest that you did not have to earn",
+  "Your self-taught skills are a testament to your hunger",
+  "You have built a livelihood with your own mind",
+  "Your patience has been a business strategy",
+  "You are more than what you produce",
+  "Today, your presence is your profit",
+  "Your years of fighting are a resume no one can match",
+  "You have earned the right to be tired",
+  "Your love has been a survival plan",
+  "You have made it through every worst-case scenario",
+  "Your story is still being written by a woman who refuses to quit",
+  "You are allowed to be proud of how far you have come",
 ];
 
 const affirmationEndings = [
-  "and you do not have to prove your worth.",
-  "and one small step is enough for now.",
-  "and you may pause before you decide what comes next.",
-  "and the day does not need to be perfect to be precious.",
-  "and you can ask for help without losing your strength.",
-  "and your needs belong in the room too.",
+  "and you can pause without guilt.",
+  "and that is not an opinion, it is a fact.",
+  "and now it is your turn to receive.",
+  "and you deserve to be celebrated for it.",
   "and being here is already something real.",
+  "and today, let someone else lift you.",
+  "and their strength is a reflection of yours.",
   "and you can begin again as many times as you need.",
-  "and there is room for both courage and weariness.",
-  "and you are worthy on the quiet days as well.",
+  "and that rest is not a luxury, it is a necessity.",
+  "and it is time the world gave back to you.",
+  "and that is not ordinary, that is extraordinary.",
+  "and patience is also a form of power.",
+  "and your value is not in your productivity.",
+  "and you do not have to prove it to anyone.",
+  "and that testimony deserves to be heard.",
+  "and tired is not the same as weak.",
+  "and that anchor can hold you now too.",
+  "and every one of those days was a victory.",
+  "and there are chapters you have not imagined yet.",
+  "and pride is not vanity, it is truth.",
 ];
 
 export const dailyAffirmations = affirmationOpeners.flatMap(opener => affirmationEndings.map(ending => `${opener}; ${ending}`));
 
-export function affirmationForDate(date = new Date()) {
-  const dayNumber = Math.floor(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) / 86400000);
-  return dailyAffirmations[((dayNumber % dailyAffirmations.length) + dailyAffirmations.length) % dailyAffirmations.length];
-}
+export const splashQuotes: string[] = [
+  "You built yourself from nothing but willpower; and you can pause without guilt.",
+  "You have outworked every obstacle in your path; and now it is your turn to receive.",
+  "Your hustle is not desperation; it is devotion; and you deserve to be celebrated for it.",
+  "You have carried a family on your back; and today, let someone else lift you.",
+  "Your children are proof of what a single mother can do; and their strength is a reflection of yours.",
+  "There is no syllabus for what you have taught yourself; and you can begin again as many times as you need.",
+  "You deserve rest that you did not have to earn; and that rest is not a luxury, it is a necessity.",
+  "Your self-taught skills are a testament to your hunger; and it is time the world gave back to you.",
+  "You have built a livelihood with your own mind; and that is not ordinary, that is extraordinary.",
+  "Your patience has been a business strategy; and patience is also a form of power.",
+  "You are more than what you produce; and your value is not in your productivity.",
+  "Today, your presence is your profit; and you do not have to prove it to anyone.",
+  "Your years of fighting are a resume no one can match; and that testimony deserves to be heard.",
+  "You have earned the right to be tired; and tired is not the same as weak.",
+  "Your love has been a survival plan; and that anchor can hold you now too.",
+  "You have made it through every worst-case scenario; and every one of those days was a victory.",
+  "Your story is still being written by a woman who refuses to quit; and there are chapters you have not imagined yet.",
+  "You are allowed to be proud of how far you have come; and pride is not vanity, it is truth.",
+  "You have given enough; today, receive something good and undeserved.",
+  "Your hands have built worlds; do not let anyone call that ordinary.",
+  "You are a mother, a worker, a survivor; and you are still becoming.",
+  "Your tomorrow does not need to be perfect; it just needs you to show up.",
+  "You have been strong for everyone else; today, be strong for yourself.",
+  "Your life is not a list of chores; it is a collection of loves.",
+  "You do not have to earn love; you are worthy of it exactly as you are.",
+  "Today, your only assignment is to exist; everything else can wait.",
+  "Your worth is not in what you do; it is in who you have always been.",
+  "You have survived a hundred hard mornings; that is courage, not habit.",
+  "Your voice matters; do not let the world turn down the volume.",
+  "You are allowed to take up space; the world is better when you fill it.",
+  "Your quiet strength holds more than noise ever could.",
+  "Today, choose one small joy; you have earned that too.",
+  "You are not behind; you are exactly where your journey needs you.",
+  "Your experience is not old news; it is the rarest kind of wisdom.",
+  "You have earned the right to do things slowly; slow is still progress.",
+  "Your feelings are not too much; they are the most honest part of you.",
+  "The world needs your stories; your remembering is a bridge.",
+  "You are a garden that has survived many winters; that is beauty.",
+  "Your life is not a problem to be solved; it is a gift to be lived.",
+  "You have been the rock for so long; it is okay to be the river now.",
+  "Your presence is a present; unwrap it gently each morning.",
+  "You do not need permission to take care of yourself.",
+  "Your years of hard work are not a burden; they are a library of survived chapters.",
+  "You are worthy of good things, even on the days you do not feel it.",
+  "Your gentle way is not weakness; it is the deepest kind of power.",
+  "Today, your only job is to be; the doing can wait.",
+  "You have given enough; today, receive something small and beautiful.",
+  "Your heart still knows how to hope; that is a kind of magic.",
+  "You are not too old for new tenderness; tenderness has no age limit.",
+  "The people you raised carry your love forward; you are never walking alone.",
+  "Your life is a poem; even the hard lines are part of the beauty.",
+  "You are allowed to be both brave and tired; they are not opposites.",
+  "Your worth is not measured in output; it is measured in love.",
+  "Today, notice what you do well; you have been trained to notice the rest.",
+  "You are a lantern in someone's darkness; never forget that light.",
+  "Your tomorrow does not need to be perfect; it just needs you.",
+  "You have earned the right to be soft; hardness was never the point.",
+  "Your story is still being written; do not close the book too soon.",
+  "You are not a burden; you are a person, and that is always enough.",
+  "The small things you do are not small; they are the whole fabric of love.",
+  "Your joy is not selfish; it is a signal that you are still here, still alive.",
+  "You have outlived things that tried to break you; that is a victory.",
+  "Your kindness includes kindness toward yourself; start there today.",
+  "You are allowed to be proud of yourself; no one else needs to applaud.",
+  "Today, your presence matters; even if all you did was get through it.",
+  "You are more than your mistakes; they are footnotes, not the story.",
+  "Your life has weight; do not let anyone tell you it is light.",
+  "You can ask for help without losing your strength; that is wisdom, not weakness.",
+  "Your being here is already something real; the world is different because you are in it.",
+  "You can begin again as many times as you need; there is no limit on fresh starts.",
+  "There is room for both courage and weariness; you are not one or the other.",
+  "You are worthy on the quiet days as well; the ordinary days are holy too.",
+  "Your feelings may be heard without taking over; they are trying to help.",
+  "A quiet beginning is still a beginning; do not despise small starts.",
+  "The day does not need to be perfect to be precious; neither do you.",
+  "You do not have to prove your worth; it is not on trial.",
+  "Your story still has room; there are pages left to fill.",
+  "You may pause before you decide what comes next; pause is a form of wisdom.",
+  "Your presence matters; the world is arranged differently because you are here.",
+  "You are allowed to move gently; not everything needs force.",
+  "Your care for others is meaningful; it is the mark of a full heart.",
+  "Rest is part of a life well lived; it is not the absence of living.",
+  "You can make room for one small hope; hope does not need to be big to be real.",
+  "Your wisdom does not need to shout; it speaks in the quiet moments.",
+  "You have made it through difficult days; that is not luck, that is you.",
+  "Your kindness includes kindness toward yourself; that is where it starts.",
+  "You are more than the work waiting for you; you are the one doing the work.",
+  "A softer pace can still carry you forward; speed is not the same as progress.",
+  "Your feelings may be heard without taking over; listen to them.",
+  "You are allowed to be tired; you have been strong for a long time.",
+  "Your life is not a list of tasks; it is a collection of moments.",
+  "You do not have to earn love; you are worthy of it exactly as you are.",
+  "Today, your only assignment is to exist; everything else is extra.",
+  "Your tomorrow is not a test; it is another chance to be human.",
+  "You are a person, not a project; stop trying to fix yourself.",
+  "Your worth is not up for debate; it is settled.",
+  "You have been your own worst critic; try being your own kind friend.",
+  "The world does not need you to be perfect; it needs you to be present.",
+  "You are allowed to change your mind; growth is not a straight line.",
+  "Your age is not a problem to solve; it is a milestone to honor.",
+  "You are still here, still standing; that is enough for today.",
+  "Your heart is wiser than your worries; trust it a little more.",
+  "You have earned the right to take your time; slow is not lazy.",
+  "Today, your presence is the present; everything else is wrapping.",
+  "You are not too much; you have just been around people who could not hold you.",
+  "Your life is a testimony; every scar is a survival story.",
+  "You are allowed to be happy; joy is not just for the young.",
+  "Your story is not over; there are chapters you have not imagined yet.",
+  "You are a lantern; you do not erase the dark, you make it walkable.",
+  "Your kindness is a currency that never devalues; spend it freely.",
+  "Today, you do not have to be strong; you are allowed to be soft.",
+  "Your years are not a decline; they are an ascent into deeper understanding.",
+  "You have the right to be proud of who you have become.",
+  "Your love is not wasted; it echoes in ways you will never see.",
+  "You are allowed to rest; rest is not the opposite of purpose.",
+  "Your voice is needed; do not let silence convince you otherwise.",
+  "Today, your only job is to be kind to the person in the mirror.",
+  "You are a survivor, not a statistic; your story is your own.",
+  "Your worth is not in what you do; it is in who you are.",
+  "You have earned the right to be gentle with yourself; harshness is behind you.",
+  "The world is better because you are in it; that is not an opinion, it is a fact.",
+  "Your heart still knows how to open; that is a triumph, not a vulnerability.",
+  "You are not alone; you are part of a long line of women who endured.",
+  "Today, your presence matters; even if no one says it out loud.",
+  "You are allowed to be proud of how far you have come.",
+  "Your wisdom is not outdated; it is the most current thing about you.",
+  "You do not have to be useful to matter; your existence is the point.",
+  "Your tomorrow is a blank page; you get to decide what goes on it.",
+  "You are a garden that has survived many seasons; that is beauty.",
+  "Your quiet strength is not invisible; it is the most powerful kind.",
+  "Today, you are enough; not because of what you did, but because of who you are.",
+  "You have the right to be happy; happiness is not a reward, it is a birthright.",
+  "Your life is not a problem; it is a pilgrimage.",
+  "You are allowed to take up space; the world made room for you for a reason.",
+  "Your kindness is not naivety; it is the hardest thing you have learned.",
+  "Today, your presence is enough; everything else is a bonus.",
+  "You are a lantern in a world that forgets to look up; keep shining.",
+  "Your years are not a closing chapter; they are a plot twist.",
+  "You have the right to be loved; not for what you give, but for what you are.",
+  "Your story is still being written; do not let anyone else hold the pen.",
+  "Today, your only task is to be gentle; harshness is for other days.",
+  "You are worthy of good things; not because you earned them, but because you exist.",
+  "Your heart is not too old for new beginnings; it is just the right age.",
+  "You are allowed to be both wise and uncertain; they walk together.",
+  "Your presence is a gift; do not leave it unwrapped.",
+  "Today, you do not have to prove anything; your life is the proof.",
+  "You are a survivor, and that is not a small thing; it is everything.",
+  "Your worth is not a feeling; it is a fact that feelings cannot change.",
+  "You have the right to be proud of yourself; pride is not vanity, it is truth.",
+  "Today, your presence matters; the world is different because you showed up.",
+  "You are allowed to be tired and still be enough; rest is not failure.",
+  "Your wisdom is not a relic; it is a compass.",
+  "You are a lantern; you do not fix the dark, you make it walkable.",
+  "Today, your only job is to be; the rest is optional.",
+  "You have earned the right to be kind to yourself; you have been kind to everyone else.",
+  "Your life is not a list of accomplishments; it is a collection of loves.",
+  "You are allowed to be soft; softness is not surrender.",
+  "Your presence is the present; everything else is just paper.",
+  "Today, you are enough; not because of what you did yesterday, but because you are here.",
+  "You are a garden in full bloom; do not let anyone call you winter.",
+  "Your story is not a tragedy; it is a triumph with hard chapters.",
+  "You have the right to be happy; happiness is not a luxury, it is a necessity.",
+  "Your kindness is a superpower; do not let the world make you ordinary.",
+  "Today, your presence matters; even if the world is too busy to notice.",
+  "You are allowed to be proud of yourself; you have come further than you think.",
+  "Your worth is not in your productivity; it is in your humanity.",
+  "You are a lantern; keep burning, even when no one says thank you.",
+  "Today, your only assignment is to be gentle with yourself.",
+  "You have survived everything so far; that is not luck, that is you.",
+  "Your heart is not too old; it is just the right age for this next thing.",
+  "You are allowed to take up space; the world is better when you fill it.",
+  "Your presence is a present; do not keep it to yourself.",
+  "Today, your presence matters; that is the whole truth, and nothing but the truth.",
+];
 
-const SPLASH_AFFIRMATION_INDEX_KEY = "pannas-lantern:splash-affirmation-index";
-
-export function nextSplashAffirmation() {
-  if (typeof sessionStorage === "undefined") return dailyAffirmations[0];
-  try {
-    const previous = Number.parseInt(sessionStorage.getItem(SPLASH_AFFIRMATION_INDEX_KEY) ?? "-1", 10);
-    const nextIndex = Number.isFinite(previous) ? (previous + 1) % dailyAffirmations.length : 0;
-    sessionStorage.setItem(SPLASH_AFFIRMATION_INDEX_KEY, String(nextIndex));
-    return dailyAffirmations[nextIndex];
-  } catch {
-    return dailyAffirmations[Math.floor(Math.random() * dailyAffirmations.length)];
-  }
+export function saveWellbeingCheckins(items: WellbeingCheckin[]) {
+  try { localStorage.setItem(WELLBEING_CHECKINS_KEY, JSON.stringify(items)); } catch { /* session remains usable */ }
 }
 
 export function loadWellbeingCheckins(): WellbeingCheckin[] {
   try { const raw = localStorage.getItem(WELLBEING_CHECKINS_KEY); return raw ? JSON.parse(raw) as WellbeingCheckin[] : []; } catch { return []; }
-}
-
-export function saveWellbeingCheckins(items: WellbeingCheckin[]) {
-  try { localStorage.setItem(WELLBEING_CHECKINS_KEY, JSON.stringify(items)); } catch { /* session remains usable */ }
 }
 
 export function loadWellbeingMedications(): WellbeingMedication[] {
@@ -556,7 +728,26 @@ export function saveWellbeingAppointmentNote(input: Omit<WellbeingAppointmentNot
 }
 
 export function affirmationCount() {
-  return dailyAffirmations.length;
+  return splashQuotes.length;
+}
+
+const SPLASH_AFFIRMATION_INDEX_KEY = "pannas-lantern:splash-affirmation-index";
+
+export function nextSplashAffirmation() {
+  if (typeof sessionStorage === "undefined") return splashQuotes[0];
+  try {
+    const previous = Number.parseInt(sessionStorage.getItem(SPLASH_AFFIRMATION_INDEX_KEY) ?? "-1", 10);
+    const nextIndex = Number.isFinite(previous) ? (previous + 1) % splashQuotes.length : 0;
+    sessionStorage.setItem(SPLASH_AFFIRMATION_INDEX_KEY, String(nextIndex));
+    return splashQuotes[nextIndex];
+  } catch {
+    return splashQuotes[Math.floor(Math.random() * splashQuotes.length)];
+  }
+}
+
+export function affirmationForDate(date = new Date()) {
+  const dayNumber = Math.floor(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) / 86400000);
+  return splashQuotes[((dayNumber % splashQuotes.length) + splashQuotes.length) % splashQuotes.length];
 }
 
 export function hasAffirmationLibrary() {

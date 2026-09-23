@@ -802,6 +802,19 @@ function LanternPanel({ tab, reply, onSuggestion, onExpand, onCollapse }: { tab:
   return <aside className="card lantern-panel" id="lantern-panel"><div className="lantern-head"><h2 className="lantern-title">The Lantern</h2><IconButton label="Collapse Lantern panel" onClick={onCollapse}><PanelRightClose size={18} /></IconButton></div><img className="lantern-art" src={LANTERN_EMBLEM} alt="Pana’s Lantern emblem" /><div className="lantern-context"><span>You are in:</span><strong>{tab.label}</strong></div><p className="lantern-copy">{tabAssistantCopy[tab.id]}</p><div className="suggestions">{tab.suggestions.map(suggestion => <button className="suggestion" key={suggestion} onClick={() => onSuggestion(suggestion)}><Sparkles size={17} color="var(--accent)" />{suggestion}<ChevronRight size={16} /></button>)}</div>{reply && <div className="lantern-reply">{reply}</div>}<button className="button small" style={{ marginTop: 15, width: "100%", justifyContent: "center" }} onClick={onExpand}><MessageSquareText size={16} />Chat with The Lantern</button></aside>;
 }
 
+const emphasisWords = /(\b(?:built|outworked|carried|deserve|earned|fighting|survived|hustle|devotion|willpower|refuses?|everything|nothing|no one|yourself|strength|power|enough|always|never|still|today)\b)/gi;
+
+function formatAffirmation(raw: string) {
+  const parts = raw.replace(emphasisWords, '⟪EM⟫$1⟫/EM⟫').split('⟪EM⟫');
+  return parts.map((part, i) => {
+    if (part.startsWith('⟫/EM⟫')) return null;
+    const inner = part.replace('⟫/EM⟫', '');
+    const words = inner.split(' ');
+    const last = words.pop();
+    return <span key={i}>{words.join(' ')}{words.length > 0 ? ' ' : ''}<strong><em>{last}</em></strong>{part.endsWith('⟫/EM⟫') ? '' : ' '}</span>;
+  });
+}
+
 function LanternSplash({ onEnter }: { onEnter: () => void }) {
   const [affirmation] = useState(() => nextSplashAffirmation());
   return <main className="lantern-splash" aria-labelledby="splash-title">
@@ -809,11 +822,16 @@ function LanternSplash({ onEnter }: { onEnter: () => void }) {
     <div className="splash-vine splash-vine-left" aria-hidden="true"><Flower2 /><Feather /><Flower2 /></div>
     <div className="splash-vine splash-vine-right" aria-hidden="true"><Flower2 /><Feather /><Flower2 /></div>
     <div className="splash-content">
+      <div className="splash-quote-top">
+        <span className="splash-quote-mark">"</span>
+        <p className="splash-quote-text">{formatAffirmation(affirmation)}</p>
+        <span className="splash-quote-mark splash-quote-mark-close">"</span>
+      </div>
       <p className="splash-kicker">A quiet place for ideas</p>
       <h1 id="splash-title">Pana’s Lantern</h1>
       <p className="splash-subtitle">A light for research, writing, and remembering.</p>
       <button className="splash-enter" type="button" onClick={onEnter}><span>Enter Pana’s Lantern</span><ArrowUpRight size={18} aria-hidden="true" /></button>
-      <p className="splash-hint">Take your time. Everything begins where you are.</p><p className="splash-affirmation" aria-label="Daily affirmation">“{affirmation}”</p>
+      <p className="splash-hint">Take your time. Everything begins where you are.</p>
     </div>
   </main>;
 }
