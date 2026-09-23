@@ -44,21 +44,21 @@ export const UPSTREAMS: Record<string, Upstream> = {
 };
 
 /**
- * For OpenRouter, only return free models (pricing.prompt == 0 && pricing.completion == 0).
- * Returns null if not OpenRouter or if upstream doesn't provide pricing info.
+ * For OpenRouter, only return free models. OpenRouter marks free models with
+ * a `:free` or `-free` suffix on the model id (e.g. "google/gemini-2.0-flash:free").
  */
 export function filterOpenRouterFreeModels(raw: unknown): unknown | null {
   if (!Array.isArray(raw) || !raw.length) return raw;
   const free = raw.filter((m) => {
-    if (!m || typeof m !== "object") return false;
-    const rec = m as Record<string, unknown>;
-    const pricing = rec.pricing as Record<string, unknown> | undefined;
-    if (!pricing || typeof pricing !== "object") return false;
-    const prompt = Number(pricing.prompt ?? pricing.prompt_tokens ?? 0);
-    const completion = Number(pricing.completion ?? pricing.completion_tokens ?? 0);
-    return prompt === 0 && completion === 0;
+    if (typeof m === "string") return m.endsWith(":free") || m.endsWith("-free");
+    if (m && typeof m === "object") {
+      const rec = m as Record<string, unknown>;
+      const id = String(rec.id ?? rec.name ?? "");
+      return id.endsWith(":free") || id.endsWith("-free");
+    }
+    return false;
   });
-  return free.length ? free : raw; // fall back to all if no free models found
+  return free.length ? free : raw;
 }
 
 export function resolveProvider(provider: string): Upstream | null {
